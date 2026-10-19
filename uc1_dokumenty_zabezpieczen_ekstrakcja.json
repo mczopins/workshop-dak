@@ -1,0 +1,87 @@
+[
+  {
+    "collateral_id": "ZAB-001",
+    "loan_agreement_ref": "KRED-2022-0091",
+    "document_type": "OPERAT_SZACUNKOWY_I_AKT_NOTARIALNY",
+    "document_date": "2022-05-12",
+    "notarial_repertory_no": "Rep. A nr 4412/2022",
+    "extracted_attributes": {
+      "kw_number": "WA1M/00123456/7",
+      "owners": ["Janina Kowalska"],
+      "owner_share": "1/1",
+      "usable_area_m2": 68.50,
+      "appraised_market_value_pln": 750000.00,
+      "agreed_mortgage_amount_pln": 630000.00,
+      "agreed_mortgage_currency": "PLN"
+    },
+    "raw_document_excerpt": "Wypis z Aktu Notarialnego Rep. A 4412/2022: Pani Janina Kowalska oświadcza, że jest wyłącznym właścicielem (udział 1/1) lokalu mieszkalnego o powierzchni użytkowej 68,50 m2 położonego w Warszawie przy ul. Puławskiej 14 m. 8, dla którego Sąd Rejonowy dla Warszawy-Mokotowa prowadzi księgę wieczystą nr WA1M/00123456/7, oraz ustanawia na rzecz Banku Uniwersalnego S.A. hipotekę umowną do kwoty 630 000,00 PLN."
+  },
+  {
+    "collateral_id": "ZAB-002",
+    "loan_agreement_ref": "KRED-2021-0144",
+    "document_type": "OPERAT_SZACUNKOWY_I_AKT_NOTARIALNY",
+    "document_date": "2021-02-20",
+    "notarial_repertory_no": "Rep. A nr 1189/2021",
+    "extracted_attributes": {
+      "kw_number": "KR1P/00987654/2",
+      "owners": ["Marek Nowak"],
+      "owner_share": "1/1",
+      "usable_area_m2": 62.00,
+      "appraised_market_value_pln": 680000.00,
+      "agreed_mortgage_amount_pln": 915000.00,
+      "agreed_mortgage_currency": "PLN"
+    },
+    "raw_document_excerpt": "Operat szacunkowy z dnia 20.02.2021 dla nieruchomości lokalowej przy ul. Karmelickiej 22/4 w Krakowie (KW nr KR1P/00987654/2): przyjęto do wyceny powierzchnię łączną 62,00 m2 (wraz z przynależną piwnicą 7,80 m2 niewpisaną w Dziale I-O eKW). W umowie kredytowej KRED-2021-0144 wymagano wpisu hipoteki do kwoty 915 000,00 PLN na udziale 1/1 Pana Marka Nowaka."
+  },
+  {
+    "collateral_id": "ZAB-003",
+    "loan_agreement_ref": "KRED-2023-0880",
+    "document_type": "UMOWA_USTANOWIENIA_HIPOTEKI_LACZNEJ",
+    "document_date": "2023-10-15",
+    "notarial_repertory_no": "Rep. A nr 9820/2023",
+    "extracted_attributes": {
+      "kw_number": "PO1P/00456123/9",
+      "owners": ["TechBud Sp. z o.o."],
+      "owner_share": "1/1",
+      "usable_area_m2": 1250.00,
+      "appraised_market_value_pln": 950000.00,
+      "agreed_mortgage_amount_pln": 1290000.00,
+      "agreed_mortgage_currency": "PLN"
+    },
+    "raw_document_excerpt": "Akt notarialny ustanowienia hipoteki na nieruchomości gruntowej w Poznaniu (działka 44/2, KW PO1P/00456123/9, pow. 1250 m2) należącej w całości (1/1) do TechBud Sp. z o.o. do kwoty 1 290 000,00 PLN."
+  },
+  {
+    "collateral_id": "ZAB-004",
+    "loan_agreement_ref": "KRED-2023-0880",
+    "document_type": "UMOWA_ZABEZPIECZENIA_DODATKOWEGO",
+    "document_date": "2023-10-18",
+    "notarial_repertory_no": "Rep. A nr 9915/2023",
+    "extracted_attributes": {
+      "kw_number": "PO1P/00456124/6",
+      "owners": ["TechBud Sp. z o.o."],
+      "owner_share": "1/1",
+      "usable_area_m2": 620.00,
+      "appraised_market_value_pln": 450000.00,
+      "agreed_mortgage_amount_pln": 450000.00,
+      "agreed_mortgage_currency": "PLN"
+    },
+    "raw_document_excerpt": "Oświadczenie o ustanowieniu hipoteki dodatkowej do kwoty 450 000,00 PLN na sąsiedniej działce nr 44/3 (KW PO1P/00456124/6, pow. 620 m2). Uwaga audytowa: wniosek wieczystoksięgowy został zwrócony z powodu nieopłacenia opłaty sądowej – w Dziale IV eKW nadal brak wpisu!"
+  },
+  {
+    "collateral_id": "ZAB-005",
+    "loan_agreement_ref": "KRED-2023-0519",
+    "document_type": "OPERAT_SZACUNKOWY_I_AKT_NOTARIALNY",
+    "document_date": "2023-05-10",
+    "notarial_repertory_no": "Rep. A nr 3102/2023",
+    "extracted_attributes": {
+      "kw_number": "WA1M/00554433/1",
+      "owners": ["Anna Wiśniewska"],
+      "owner_share": "1/1",
+      "usable_area_m2": 81.00,
+      "appraised_market_value_pln": 890000.00,
+      "agreed_mortgage_amount_pln": 765000.00,
+      "agreed_mortgage_currency": "PLN"
+    },
+    "raw_document_excerpt": "W umowie kredytowej KRED-2023-0519 właścicielem nieruchomości przy al. Jana Pawła II 80/112 (KW WA1M/00554433/1) jest Pani Anna Wiśniewska (po zawarciu związku małżeńskiego), natomiast w Dziale II eKW nadal widnieje nazwisko panieńskie Anna Kowalczyk."
+  }
+]

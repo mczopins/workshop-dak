@@ -1,0 +1,86 @@
+# ==============================================================================
+# WZORCOWY PLIK KONFIGURACYJNY ENCJI WARSTWY G2 (ISTNIEJĄCY STANDARD W REPOZYTORIUM)
+# Używany przez Zespół 5 ("Narodziny Encji") jako wzorzec struktury YAML i testów DQ
+# przy generowaniu nowej encji w warstwie G3.
+# ==============================================================================
+
+version: 2
+model_definition:
+  name: g2_credit_agreements
+  layer: G2_SILVER_CORE
+  schema: dak_workshop_demo
+  materialized: table
+  cluster_by: ["customer_id", "product_category"]
+  description: >
+    Ustandaryzowana encja warstwy G2 przechowująca aktywne umowy kredytowe
+    wraz z saldem w walucie oryginalnej i kursem przeliczeniowym do PLN.
+  upstream_sources:
+    - source_table: dak_workshop_demo.g1_core_clients
+      join_key: "LPAD(CAST(cif_no AS STRING), 8, '0') = customer_id"
+      relationship: many_to_one
+
+  columns:
+    - name: agreement_id
+      data_type: STRING
+      nullable: false
+      primary_key: true
+      source_expression: "TRIM(raw.agreement_id)"
+      description: "Unikalny identyfikator umowy kredytowej."
+      data_quality_tests:
+        - unique
+        - not_null
+
+    - name: customer_id
+      data_type: STRING
+      nullable: false
+      source_expression: "LPAD(CAST(raw.customer_id AS STRING), 8, '0')"
+      description: "8-znakowy identyfikator klienta CIF z wiodącymi zerami."
+      data_quality_tests:
+        - not_null
+        - format_regex: "^[0-9]{8}$"
+
+    - name: product_category
+      data_type: STRING
+      nullable: false
+      source_expression: "UPPER(TRIM(raw.product_category))"
+      description: "Kategoria produktu kredytowego."
+      data_quality_tests:
+        - not_null
+        - accepted_values:
+            values: ["HIPOTEKA_MIESZKANIOWA", "KREDYT_INWESTYCYJNY", "POZYCZKA_GOTOWKOWA", "LINIA_KREDYTOWA"]
+
+    - name: contract_start_dt
+      data_type: DATE
+      nullable: false
+      source_expression: "SAFE.PARSE_DATE('%Y-%m-%d', raw.contract_start_dt)"
+      description: "Data uruchomienia umowy kredytowej."
+      data_quality_tests:
+        - not_null
+
+    - name: current_balance_orig
+      data_type: NUMERIC(18,2)
+      nullable: false
+      source_expression: "CAST(raw.current_balance_orig AS NUMERIC)"
+      description: "Bieżące saldo zadłużenia w walucie umowy."
+      data_quality_tests:
+        - not_null
+        - min_value: 0.00
+
+    - name: currency_iso
+      data_type: STRING
+      nullable: false
+      source_expression: "UPPER(TRIM(raw.currency_iso))"
+      description: "3-literowy kod waluty ISO-4217."
+      data_quality_tests:
+        - not_null
+        - accepted_values:
+            values: ["PLN", "EUR", "USD", "CHF"]
+
+    - name: fx_rate_to_pln
+      data_type: NUMERIC(10,4)
+      nullable: false
+      source_expression: "COALESCE(CAST(raw.fx_rate_to_pln AS NUMERIC), 1.0000)"
+      description: "Kurs przeliczeniowy do PLN."
+      data_quality_tests:
+        - not_null
+        - min_value: 0.0001

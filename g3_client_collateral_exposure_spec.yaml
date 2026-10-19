@@ -1,0 +1,155 @@
+# ==============================================================================
+# SPECYFIKACJA ENCJI DOCELOWEJ WARSTWY G3 (TARGET_SCHEMAS & BUSINESS_CONTEXT)
+# Plik wejściowy w GCS do ćwiczenia ze skillem: schema-mapping (Data Agent Kit)
+# ==============================================================================
+
+entity_metadata:
+  entity_name: g3_client_collateral_exposure
+  layer: G3_GOLD_ANALYTICAL
+  target_platform: BigQuery
+  target_dataset: dak_workshop_demo
+  owner_team: Credit_Risk_and_Collateral_Operations
+  version: "1.0.0-draft"
+  description: >
+    Ujednolicona encja analityczna warstwy G3 łącząca ekspozycję kredytową klienta
+    (warstwa G2), wewnętrzny rejestr zabezpieczeń banku (warstwa G1) oraz zrzuty
+    z elektronicznych Ksiąg Wieczystych eKW / Centralnej Bazy Zabezpieczeń (warstwa G1).
+    Służy do codziennego monitorowania wskaźnika LTV, wykrywania rozbieżności
+    między wpisami w eKW a systemem bankowym oraz raportowania ryzyka.
+
+business_context:
+  primary_grain: >
+    Jeden wiersz reprezentuje pojedynczą umowę kredytową klienta wraz z zagregowaną
+    wartością przypisanych do niej zabezpieczeń hipotecznych oraz statusem weryfikacji w eKW.
+  domain_standards:
+    currency: ISO-4217 (3-literowy kod waluty WIELKIMI LITERAMI, np. PLN, EUR)
+    dates: ISO-8601 (DATE w formacie YYYY-MM-DD, TIMESTAMP w UTC)
+    land_register_number_format: "XXXX/NNNNNNNN/C (kod sądu / 8 cyfr / cyfra kontrolna)"
+  transformation_rules_and_expectations:
+    - "Klucz klienta w różnych systemach źródłowych G1/G2 występuje pod różnymi nazwami (cif_no, customer_id, owner_bank_id) oraz w różnych typach danych (INT64 vs STRING z wiodącymi zerami). Przed złączeniem należy znormalizować klucz klienta do 8-znakowego STRING z wiodącymi zerami lub INT64."
+    - "Wartości kwotowe ze zrzutów eKW (hipoteka_kwota_raw) zawierają spacje tysięczne, przecinki dziesiętne i symbole walut (np. '450 000,00 PLN') – wymagają oczyszczenia przed rzutowaniem na NUMERIC(18,2)."
+    - "Wskaźnik LTV (ltv_pct) wyliczany jest jako: (bieżące saldo zadłużenia w PLN / łączna wartość rynkowa zabezpieczeń z operatów w PLN) * 100."
+    - "Wszystkie pola tekstowe z kodami statusów i segmentów muszą mieć usunięte białe znaki (TRIM) i być zamienione na wielkie litery (UPPER). Wartości tekstowe 'NULL', 'Brak', 'N/A', '-' należy zamienić na prawdziwy NULL bazodanowy."
+
+# ------------------------------------------------------------------------------
+# DEFINICJA SCHEMATU DOCELOWEGO W WARSTWIE G3 (TARGET_SCHEMA)
+# UWAGA: Specyfikacja zawiera typowe błędy projektowe z arkuszy mapowań G1->G2->G3
+# (duplikaty nazw atrybutów, brakujące odpowiedniki w źródłach dla pól REQUIRED,
+# konflikty typów), które skill `schema-mapping` powinien wykryć i rozwiązać.
+# ------------------------------------------------------------------------------
+target_schema:
+  table_name: g3_client_collateral_exposure
+  columns:
+    - name: credit_agreement_id
+      data_type: STRING
+      mode: REQUIRED
+      description: "Unikalny identyfikator umowy kredytowej (klucz główny encji G3)."
+
+    - name: client_id
+      data_type: STRING
+      mode: REQUIRED
+      description: "Znormalizowany 8-znakowy identyfikator klienta (CIF)."
+
+    - name: client_full_name
+      data_type: STRING
+      mode: REQUIRED
+      description: "Imię i nazwisko lub pełna nazwa firmy klienta."
+
+    - name: client_segment
+      data_type: STRING
+      mode: REQUIRED
+      description: "Segment klienta (RETAIL, AFFLUENT, SME, CORPORATE) – wielkimi literami."
+
+    - name: advisor_branch_code
+      data_type: STRING
+      mode: NULLABLE
+      description: "Kod placówki macierzystej prowadzącej klienta."
+
+    - name: product_type
+      data_type: STRING
+      mode: REQUIRED
+      description: "Typ produktu kredytowego (np. HIPOTEKA_MIESZKANIOWA, KREDYT_INWESTYCYJNY)."
+
+    - name: origination_date
+      data_type: DATE
+      mode: REQUIRED
+      description: "Data uruchomienia kredytu w standardzie ISO YYYY-MM-DD."
+
+    - name: outstanding_balance_pln
+      data_type: NUMERIC(18,2)
+      mode: REQUIRED
+      description: "Aktualne saldo zadłużenia kredytu przeliczone na PLN."
+
+    - name: currency_code
+      data_type: STRING
+      mode: REQUIRED
+      description: "Kod waluty ekspozycji kredytowej w standardzie ISO-4217 (np. PLN, EUR)."
+
+    - name: primary_kw_number
+      data_type: STRING
+      mode: NULLABLE
+      description: "Główny numer Księgi Wieczystej (KW) przypisany do zabezpieczenia."
+
+    - name: collateral_count
+      data_type: INT64
+      mode: REQUIRED
+      description: "Liczba zabezpieczeń przypisanych do danej umowy kredytowej."
+
+    - name: total_appraised_value_pln
+      data_type: NUMERIC(18,2)
+      mode: REQUIRED
+      description: "Suma wartości rynkowych nieruchomości z operatów szacunkowych w PLN."
+
+    - name: last_appraisal_date
+      data_type: DATE
+      mode: NULLABLE
+      description: "Data najnowszego operatu szacunkowego (w źródle zapisana jako tekst DD.MM.YYYY)."
+
+    - name: ekw_registered_mortgage_pln
+      data_type: NUMERIC(18,2)
+      mode: NULLABLE
+      description: "Suma kwot hipotek wpisanych w Dziale IV elektronicznej Księgi Wieczystej (eKW)."
+
+    - name: ekw_owner_share_fraction
+      data_type: NUMERIC(5,4)
+      mode: NULLABLE
+      description: "Udział właściciela w nieruchomości wg Działu II eKW wyrażony jako ułamek dziesiętny (np. 1.0000 dla '1/1', 0.5000 dla '1/2')."
+
+    # --- CELOWY DUPLIKAT NAZWY ATRYBUTU W SPECYFIKACJI (#1 i #2) ---
+    - name: collateral_status
+      data_type: STRING
+      mode: REQUIRED
+      source_hint: "g1_collateral_registry.status_zabezpieczenia"
+      description: "Status zabezpieczenia w wewnętrznym systemie bankowym (np. AKTYWNE, W_REJESTRACJI, ZWOLNIONE)."
+
+    - name: collateral_status
+      data_type: STRING
+      mode: NULLABLE
+      source_hint: "g1_ekw_land_register_dump.dzial_iv_status"
+      description: "Status wpisu hipoteki w Dziale IV zrzutu z eKW (np. WPISANA, WZMIANKA, BRAK_WPISU)."
+
+    # --- POLA WYMAGANE (REQUIRED) BEZ BEZPOŚREDNIEJ KOLUMNY W G1/G2 ---
+    - name: ltv_pct
+      data_type: NUMERIC(6,2)
+      mode: REQUIRED
+      description: "Wskaźnik Loan-to-Value (%) = (outstanding_balance_pln / total_appraised_value_pln) * 100."
+
+    - name: ltv_regulatory_bucket
+      data_type: STRING
+      mode: REQUIRED
+      description: "Koszyk regulacyjny LTV: 'LOW_RISK' (<=60%), 'STANDARD' (60-80%), 'HIGH_LTV' (>80%), 'UNSECURED' (brak zabezpieczenia)."
+
+    - name: esg_energy_class
+      data_type: STRING
+      mode: REQUIRED
+      description: "Klasa energetyczna budynku ze świadectwa charakterystyki energetycznej (A+, A, B, C, D, E, F, G). Uwaga: pole wymagane w nowym modelu G3, ale jeszcze niezbierane w starych tabelach G1!"
+
+    - name: ekw_discrepancy_flag
+      data_type: BOOL
+      mode: REQUIRED
+      description: "Flaga TRUE, jeśli kwota hipoteki w eKW różni się od kwoty zabezpieczenia w banku lub brak wpisu w Dziale IV."
+
+    - name: record_loaded_at
+      data_type: TIMESTAMP
+      mode: REQUIRED
+      description: "Znacznik czasu zasilenia rekordu w warstwie G3 (CURRENT_TIMESTAMP)."

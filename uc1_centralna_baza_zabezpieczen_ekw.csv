@@ -1,0 +1,6 @@
+ekw_identifier,sad_rejonowy_kod,dzial_i_o_adres,dzial_i_o_powierzchnia_m2,dzial_ii_wlasciciele,dzial_ii_udzial_wlasnosci,dzial_iii_obciazenia_sluzebnosci,dzial_iv_status_hipoteki,dzial_iv_kwota_hipoteki_raw,dzial_iv_waluta,dzial_iv_wierzyciel_hipoteczny,data_weryfikacji_ekw
+WA1M/00123456/7,WA1M,"Warszawa, ul. Puławska 14 m. 8",68.50,"JANINA KOWALSKA (PESEL: 84051209876)",1/1,BRAK,WPISANA,"630 000,00 PLN",PLN,"BANK UNIWERSALNY S.A.",2026-10-14
+KR1P/00987654/2,KR1P,"Kraków, ul. Karmelicka 22 m. 4",54.20,"MAREK NOWAK (PESEL: 79112304512); ANNA NOWAK",1/2,"Służebność osobista mieszkania",WPISANA,"610 000,00 PLN",PLN,"BANK UNIWERSALNY S.A.",2026-10-14
+PO1P/00456123/9,PO1P,"Poznań, ul. Grunwaldzka 180 (Działka nr 44/2)",1250.00,"TECHBUD SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (KRS: 0000412233)",1/1,BRAK,WPISANA,"1 290 000,00 PLN",PLN,"BANK UNIWERSALNY S.A.",2026-10-14
+PO1P/00456124/6,PO1P,"Poznań, ul. Grunwaldzka 182 (Działka nr 44/3)",620.00,"TECHBUD SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ (KRS: 0000412233)",1/1,"Roszczenie o ustanowienie drogi koniecznej",BRAK_WPISU,NULL,BRAK,BRAK,2026-10-14
+WA1M/00554433/1,WA1M,"Warszawa, al. Jana Pawła II 80 m. 112",81.00,"ANNA KOWALCZYK (PESEL: 88090155443)",1/1,BRAK,WZMIANKA,"765 000,00 PLN",PLN,"BANK UNIWERSALNY S.A. (Wniosek DZKW/WA1M/44210/26)",2026-10-14
