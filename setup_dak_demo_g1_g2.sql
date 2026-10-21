@@ -10,6 +10,7 @@
 
 CREATE SCHEMA IF NOT EXISTS `dak_workshop_demo`
 OPTIONS (
+  location = 'EU',
   description = 'Dataset demonstracyjny na warsztat Google Cloud Data Agent Kit (DAK) - wszystkie 5 Use Caseow'
 );
 
